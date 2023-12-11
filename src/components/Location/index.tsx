@@ -23,7 +23,7 @@ export default function Location({ setLocation, location_id }) {
             range={locationList}
             rangeKey="street"
             onChange={handleChange}>
-            <View className={s.selector}>
+            <View className={s.selector} style={{ color: '#000' }}>
                 <View>街道</View>
                 <View>
                     {(locationList[curIdx] || {}).street || '请选择街道'}

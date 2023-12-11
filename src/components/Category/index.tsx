@@ -25,7 +25,7 @@ export default function Category({ setCategory, category_id }) {
             onClick={() => console.log('click')}
             onCancel={() => console.log('cancel')}
             onChange={handleChange}>
-            <View className={s.selector}>
+            <View className={s.selector} style={{color: '#000'}}>
                 <View>分类</View>
                 <View>{(categoryList[curIdx] || {}).name || '请选择分类'}</View>
             </View>
