@@ -6,6 +6,8 @@ const pluginOptions = {
     },
 };
 
+const host = process.env.NODE_ENV === 'production' ? '8.137.21.138' : 'localhost';
+
 const config = {
     projectName: 'jiamei-decoration',
     date: '2023-7-17',
@@ -58,6 +60,17 @@ const config = {
         },
     },
     h5: {
+        devServer: {
+            proxy: {
+                '/api': {
+                    target: `http://${host}:7001`,
+                    changeOrigin: true,
+                    pathRewrite: {
+                        '^/api': '', // 如果接口地址有前缀，可以在这里修改
+                    },
+                },
+            },
+        },
         framework: 'react',
         useHtmlComponents: true,
         publicPath: '/',
