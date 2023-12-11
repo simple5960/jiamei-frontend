@@ -15,6 +15,8 @@ import {
 import s from './index.module.less';
 import { getEleRect } from '~/utils';
 import Desc from '~/components/Desc';
+import AddAffix from '~/components/AddAffix';
+import TelephoneAffix from '~/components/TelephoneAffix';
 
 export default function Index() {
     const initState = {
@@ -60,10 +62,13 @@ export default function Index() {
         getEleRect('#top').then((res: any) => {
             setHeight(res.height);
         });
+        dispatch(getProductList());
     }, []);
 
     return (
         <ScrollView className={s.index} scrollY>
+            <TelephoneAffix />
+            <AddAffix />
             <Desc />
             <View className={s.top} id="top">
                 <Category

@@ -14,7 +14,7 @@ export async function req(url: string, params: any = {}): Promise<any> {
             method: 'POST',
             dataType: 'json',
             responseType: 'text',
-            url: `/api${url}`,
+            url: `/request${url}`,
             data: params,
             success: (res) => {
                 console.log(`${url} success`, res.data);

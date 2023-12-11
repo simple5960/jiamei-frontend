@@ -8,6 +8,7 @@ import AddCategory from '~/components/AddCategory';
 import AddLocation from '~/components/AddLocation';
 import { useSelector } from 'react-redux';
 import { RootState } from '~/store';
+import Taro from '@tarojs/taro';
 
 export default function Add() {
     const {isLogin} = useSelector((state: RootState) => state.account)
@@ -18,8 +19,7 @@ export default function Add() {
     ];
     const [activeType, setActiveType] = useState('category');
 
-    return (
-      isLogin ?
+    return isLogin ? (
         <View className={s.Add}>
             <View className={s.btnWrapper}>
                 {typeList.map((v) => {
@@ -38,6 +38,14 @@ export default function Add() {
             {activeType === 'product' && <AddProduct />}
             {activeType === 'category' && <AddCategory />}
             {activeType === 'location' && <AddLocation />}
-        </View> : <View>请登录后再操作</View>
+        </View>
+    ) : (
+        <View>
+            <View>请登录后再操作</View>
+            <Button
+                onClick={() => Taro.navigateTo({ url: '/pages/admin/index' })}>
+                点此登录
+            </Button>
+        </View>
     );
 }

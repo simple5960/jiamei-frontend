@@ -6,7 +6,7 @@ const pluginOptions = {
     },
 };
 
-const host = process.env.NODE_ENV === 'production' ? '8.137.21.138' : 'localhost';
+const host = process.env.NODE_ENV !== 'production' ? '8.137.21.138' : 'localhost';
 
 const config = {
     projectName: 'jiamei-decoration',
@@ -36,7 +36,7 @@ const config = {
         },
     },
     cache: {
-        enable: true, // Webpack 持久化缓存配置，建议开启。默认配置请参考：https://docs.taro.zone/docs/config-detail#cache
+        enable: false, // Webpack 持久化缓存配置，建议开启。默认配置请参考：https://docs.taro.zone/docs/config-detail#cache
     },
     mini: {
         postcss: {
@@ -62,12 +62,16 @@ const config = {
     h5: {
         devServer: {
             proxy: {
-                '/api': {
+                '/request': {
                     target: `http://${host}:7001`,
                     changeOrigin: true,
                     pathRewrite: {
-                        '^/api': '', // 如果接口地址有前缀，可以在这里修改
+                        '^/request': '', // 如果接口地址有前缀，可以在这里修改
                     },
+                },
+                '/api': {
+                    target: `https://opapi.yootang.com`,
+                    changeOrigin: true,
                 },
             },
         },

@@ -14,7 +14,7 @@ const SERVER_URL = 'https://opapi.yootang.com/api/file/img/upload'; // 统一用
 export function uploadImage(filePath) {
     return new Promise((resolve, reject) => {
         Taro.uploadFile({
-            url: SERVER_URL, // 服务器地址
+            url: '/api/file/img/upload', // 服务器地址
             filePath: filePath, // 要上传的文件路径
             name: 'img', // 接收文件的字段
             success: (res) => {
