@@ -32,6 +32,7 @@ const config = {
     compiler: {
         type: 'webpack5',
         prebundle: {
+            enable: false,
             exclude: ['taro-ui'],
         },
     },
@@ -77,7 +78,8 @@ const config = {
         },
         framework: 'react',
         useHtmlComponents: true,
-        publicPath: '/',
+        // 开发的时候设置为 / 打包的时候设置为 ./
+        publicPath: (process.env.npm_lifecycle_event || '').includes('dev') ? '/' : './',
         staticDirectory: 'static',
         postcss: {
             autoprefixer: {
