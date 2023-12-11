@@ -1,5 +1,5 @@
 import path from 'path';
-
+// scp -r dist root@8.137.21.138:/usr/local/jiamei/jiamei-nginx
 const pluginOptions = {
     less: {
         patterns: [path.resolve(__dirname, '..', 'src/app.less')],
