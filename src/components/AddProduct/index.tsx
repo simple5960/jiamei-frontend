@@ -117,7 +117,7 @@ export default function AddProduct() {
                 {productState.img_list.map((v) => {
                     if (v) {
                         return (
-                            <View className={s.imageItem}>
+                            <View className={s.imageItem} key={v}>
                                 <Image
                                     className={s.closeIcon}
                                     src={closeIcon}

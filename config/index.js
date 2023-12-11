@@ -7,8 +7,22 @@ const pluginOptions = {
 };
 
 const host = process.env.NODE_ENV !== 'production' ? '8.137.21.138' : 'localhost';
-
 const config = {
+    devServer: {
+        proxy: {
+            '/request': {
+                target: `http://${host}:7001`,
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/request': '', // 如果接口地址有前缀，可以在这里修改
+                },
+            },
+            '/api': {
+                target: `https://opapi.yootang.com`,
+                changeOrigin: true,
+            },
+        },
+    },
     projectName: 'jiamei-decoration',
     date: '2023-7-17',
     designWidth: 750,
@@ -79,7 +93,9 @@ const config = {
         framework: 'react',
         useHtmlComponents: true,
         // 开发的时候设置为 / 打包的时候设置为 ./
-        publicPath: (process.env.npm_lifecycle_event || '').includes('dev') ? '/' : './',
+        publicPath: (process.env.npm_config_argv || '').includes('dev')
+            ? '/'
+            : './',
         staticDirectory: 'static',
         postcss: {
             autoprefixer: {
