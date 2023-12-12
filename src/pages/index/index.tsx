@@ -17,6 +17,7 @@ import { getEleRect } from '~/utils';
 import Desc from '~/components/Desc';
 import AddAffix from '~/components/AddAffix';
 import TelephoneAffix from '~/components/TelephoneAffix';
+import { useDidShow } from '@tarojs/taro';
 
 export default function Index() {
     const initState = {
@@ -57,6 +58,8 @@ export default function Index() {
         setClassifyState(initState);
         dispatch(getProductList());
     };
+
+    useDidShow(() => dispatch(getProductList()))
 
     useEffect(() => {
         getEleRect('#top').then((res: any) => {

@@ -17,7 +17,7 @@ export default function Add() {
         { value: 'location', label: '位置' },
         { value: 'category', label: '分类' },
     ];
-    const [activeType, setActiveType] = useState('category');
+    const [activeType, setActiveType] = useState('product');
 
     return isLogin ? (
         <View className={s.Add}>

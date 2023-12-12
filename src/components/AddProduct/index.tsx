@@ -1,11 +1,11 @@
 import { Button, Image, Input, Label, Textarea, View } from '@tarojs/components';
-import Taro from '@tarojs/taro';
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import Taro, { useDidHide } from '@tarojs/taro';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { AtForm, AtInput } from 'taro-ui';
 
-import { addProduct } from '~/reducer/product';
-import { AppDispatch } from '~/store';
+import { addProduct, getDetail, updateProduct } from '~/reducer/product';
+import { AppDispatch, RootState } from '~/store';
 
 import Category from '../Category';
 import Location from '../Location';
@@ -13,9 +13,12 @@ import closeIcon from '~/assets/icon/close.svg';
 import s from './index.module.less';
 import { req } from '~/utils/request';
 import { uploadImage } from '~/utils/upload';
+import { useQuery } from '~/utils/route';
 
 export default function AddProduct() {
+    const {pid} = useQuery()
     const dispatch = useDispatch<AppDispatch>();
+    const { productDetail } = useSelector((state: RootState) => state.product);
     const initState = {
         name: '',
         description: '',
@@ -45,10 +48,14 @@ export default function AddProduct() {
         });
 
         const tempFilePath = res.tempFilePaths[0];
-
-        const url = await uploadImage(tempFilePath);
-        const newImageList = [...productState.img_list, url];
-        setProductState({ ...productState, img_list: newImageList });
+        Taro.showLoading({ title: '上传中...' });
+        try {
+          const url = await uploadImage(tempFilePath);
+          const newImageList = [...productState.img_list, url];
+          setProductState({ ...productState, img_list: newImageList });
+        } finally {
+          Taro.hideLoading();
+        }
     };
 
     const deleteImage = (url) => {
@@ -60,6 +67,12 @@ export default function AddProduct() {
         req('/deleteImage', { filePath: pathname });
     };
 
+    const commonHandler = () => {
+      setProductState(initState);
+      Taro.showToast({ title: '提交成功', icon: 'success' });
+      Taro.navigateTo({ url: '/pages/index/index' });
+    }
+
     const submit = () => {
         const { name, description } = productState;
         if (!name || !description) {
@@ -69,16 +82,31 @@ export default function AddProduct() {
             });
             return;
         }
-        dispatch(addProduct(productState)).then(() => {
-            setProductState(initState);
-            Taro.showToast({ title: '提交成功', icon: 'success' });
-            Taro.navigateTo({ url: '/pages/index/index'})
-            // Taro.switchTab({ url: '/pages/index/index' });
-        });
+        if (pid) {
+          dispatch(updateProduct(productState)).then(commonHandler);
+          return
+        }
+        dispatch(addProduct(productState)).then(commonHandler);
     };
 
+    useEffect(() => {
+      if (pid) {
+        // 编辑
+        dispatch(getDetail({ product_id: pid }));
+      } else {
+        setProductState(initState);
+      }
+    }, [pid])
+
+    useEffect(() => {
+      if (pid && productDetail.name) {
+        setProductState(productDetail);
+      }
+    }, [productDetail])
+
     return (
-        <AtForm className={s.AddProduct}>
+        // @ts-ignore
+        <AtForm className={s.AddProduct} key={pid}>
             <Label>产品名称</Label>
             <Textarea
                 name="name"
@@ -132,6 +160,7 @@ export default function AddProduct() {
             </View>
             {/* <Input type='file' placeholder='添加图片'/> */}
             <Button onClick={addImage}>添加图片</Button>
+            <View style={{color: '#fe3666', fontSize: '14px'}}>必须填写街道和分类才能正常添加</View>
             <Location
                 setLocation={setLocation}
                 location_id={productState.location_id}
@@ -140,7 +169,7 @@ export default function AddProduct() {
                 setCategory={setCategory}
                 category_id={productState.category_id}
             />
-            <Button onClick={submit}>提交</Button>
+            <Button onClick={submit}>{pid ? '修改' : '提交'}</Button>
         </AtForm>
     );
 }

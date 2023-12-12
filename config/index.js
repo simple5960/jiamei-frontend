@@ -5,8 +5,8 @@ const pluginOptions = {
         patterns: [path.resolve(__dirname, '..', 'src/app.less')],
     },
 };
-
-const host = process.env.NODE_ENV !== 'production' ? '8.137.21.138' : 'localhost';
+// 现在用的是本地打包，妥协一下
+const host = process.env.NODE_ENV !== 'production' ? '8.137.21.138' : '127.0.0.1';
 const config = {
     devServer: {
         proxy: {

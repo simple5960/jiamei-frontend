@@ -16,12 +16,16 @@ type ProductListRet = {
     productList: Array<ProductItem>;
 };
 
-export const getProductList = createAsyncThunk<ProductListRet>(
-    '/getProductList',
-    () => {
-        return req('/getProductList', {});
-    }
-);
+export const getProductList = createAsyncThunk<ProductListRet>('/getProductList', () => {
+    return req('/getProductList', {});
+});
+
+export const getDetail = createAsyncThunk<
+    { product: ProductItem },
+    { product_id }
+>('/getProductById', (params) => {
+    return req('/getProductById', params);
+});
 
 export const getProductListByCategoryIdAndLocationId = createAsyncThunk<
     ProductListRet,
@@ -47,6 +51,13 @@ export const addProduct = createAsyncThunk<ProductItem, any>(
     }
 );
 
+export const updateProduct = createAsyncThunk<ProductItem, any>(
+    '/updateProduct',
+    (params) => {
+        return req('/updateProduct', params);
+    }
+);
+
 const transformProductList = (productList: Array<ProductItem>) => {
     return productList.map((v) => {
         return {
@@ -60,6 +71,7 @@ export const productListSlice = createSlice({
     name: 'productList',
     initialState: {
         productList: [] as Array<ProductItem>,
+        productDetail: {} as ProductItem,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -76,6 +88,9 @@ export const productListSlice = createSlice({
                 );
             }
         );
+        builder.addCase(getDetail.fulfilled, (state, action) => {
+          state.productDetail = { ...action.payload.product , img_list: JSON.parse(action.payload.product.img_list as string)};
+        })
     },
 });
 
