@@ -58,15 +58,17 @@ export async function uploadImage(filePath) {
         const compressedImageBlob = await compressImage(blob);
 
         const formData = new FormData();
-        formData.append('img', compressedImageBlob, 'compressed_image.jpg');
+        formData.append('file', compressedImageBlob, 'compressed_image.jpg');
 
-        const uploadRes = await fetch('/api/file/img/upload', {
+        const uploadRes = await fetch('/request/upload', {
             method: 'POST',
             body: formData,
         });
 
         if (uploadRes.ok) {
             const data = await uploadRes.json();
+            console.log('data', data);
+            return data.data
             const img = (data.data || {}).img;
             const id = img ? img._id : null;
             return fixImg(id);

@@ -42,7 +42,7 @@ export default function AddProduct() {
 
     const addImage = async () => {
         const res = await Taro.chooseImage({
-            count: 6, // 可选择图片的数量，这里设置为1
+            count: 20, // 可选择图片的数量，这里设置为1
             sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
             sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
         });
