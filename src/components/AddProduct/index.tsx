@@ -42,16 +42,17 @@ export default function AddProduct() {
 
     const addImage = async () => {
         const res = await Taro.chooseImage({
-            count: 1, // 可选择图片的数量，这里设置为1
+            count: 6, // 可选择图片的数量，这里设置为1
             sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
             sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
         });
-
-        const tempFilePath = res.tempFilePaths[0];
         Taro.showLoading({ title: '上传中...' });
         try {
-          const url = await uploadImage(tempFilePath);
-          const newImageList = [...productState.img_list, url];
+          const newImageList = [...productState.img_list];
+          for (const tempFilePath of res.tempFilePaths) {
+            const url = await uploadImage(tempFilePath);
+            newImageList.push(url);
+          }
           setProductState({ ...productState, img_list: newImageList });
         } finally {
           Taro.hideLoading();
