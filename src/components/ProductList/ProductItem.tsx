@@ -1,4 +1,4 @@
-import { Image, Swiper, SwiperItem, Text, View } from '@tarojs/components';
+import { Swiper, SwiperItem, Text, View } from '@tarojs/components';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -8,11 +8,13 @@ import { AppDispatch, RootState } from '~/store';
 import s from './ProductItem.module.less';
 import Taro from '@tarojs/taro';
 import { req } from '~/utils/request';
+import LazyImage from '../LazyImage';
 
-export default function ProductItem({ item, key }: { item: PI; key: any }) {
+export default function ProductItem({ item}: { item: PI}) {
     const { categoryList, locationList } = useSelector(
         (state: RootState) => state.config
     );
+    const swiperId = `index-swiper-${item.id}`
     const {isLogin} = useSelector((state: RootState) => state.account);
     const dispatch = useDispatch<AppDispatch>()
 
@@ -22,7 +24,7 @@ export default function ProductItem({ item, key }: { item: PI; key: any }) {
     };
     const getLocaltionLabel = (id) => {
         const res = locationList.find((v) => v.id === id);
-        return res ? `${res.district}-${res.street}` : '';
+        return res ? `${res.street}` : '';
     };
 
     const handleClick = () => {
@@ -69,15 +71,20 @@ export default function ProductItem({ item, key }: { item: PI; key: any }) {
                     </View>
                 </View>
             )}
-            <View className={s.contentWrapper}>
+            <View className={s.contentWrapper} id={swiperId}>
                 <Text className={s.title}>{item.name}</Text>
                 {/* {img && <Image className={s.image} src={img} />} */}
                 {item.img_list[0] && (
                     <Swiper>
-                        {(item.img_list as Array<string>).map((v) => {
+                        {(item.img_list as Array<string>).map((v, i) => {
                             return (
                                 <SwiperItem key={v}>
-                                    <Image className={s.image} src={v} />
+                                    <LazyImage
+                                        intersectionCompId={swiperId}
+                                        compKey={`index-product-item-${i}`}
+                                        className={s.image}
+                                        src={v}
+                                    />
                                 </SwiperItem>
                             );
                         })}

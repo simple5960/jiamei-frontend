@@ -7,6 +7,7 @@ import { AppDispatch, RootState } from '~/store';
 import { Image, View } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { getDetail } from '~/reducer/product';
+import LazyImage from '~/components/LazyImage';
 
 export default function Detail() {
     const { pid } = useQuery();
@@ -34,14 +35,15 @@ export default function Detail() {
             <View className={s.title}>{productDetail?.name}</View>
             <View className={s.content}>{productDetail?.description}</View>
             {productDetail?.img_list &&
-                (productDetail.img_list as Array<string>).map((v) => {
+                (productDetail.img_list as Array<string>).map((v, i) => {
                     return (
                         v && (
-                            <Image
+                            <LazyImage
+                                key={v}
+                                compKey={`detail-image-${i}`}
                                 className={s.image}
                                 src={v}
                                 onClick={() => handlePreview(v)}
-                                mode="widthFix"
                             />
                         )
                     );
